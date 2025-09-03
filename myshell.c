@@ -4,22 +4,22 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#define MAX_INPUT 1024
-#define MAX_ARGS 64
+#define MAX_INPUT 1024    //chars in a line
+#define MAX_ARGS 64       //max args in a command
 
 int main(){
-    char input[MAX_INPUT];
-    char *args[MAX_ARGS];
-    pid_t pid;
-    int status;
+    char input[MAX_INPUT];         // buffer to store what the user types
+    char *args[MAX_ARGS];          // array of strings (each word of the command)
+    pid_t pid;                     
+    int status;                    //to store exit status of child process
 
     while(1){
         //prompt
         printf("myshell> ");
-        fflush(stdout);
+        fflush(stdout);            //makes sure the text shows immediately, doesn't wait in buffer
 
         //read input
-        if(fgets(input, sizeof(input), stdin) == NULL){
+        if(fgets(input, sizeof(input), stdin) == NULL){      //fgets --> reads what u type (until enter), stores it in input
             perror("fgets failed");
             exit(1);
         }
@@ -28,7 +28,7 @@ int main(){
         input[strcspn(input, "\n")] = 0;
 
         //exit command
-        if(strcmp(input, "exit") == 0){
+        if(strcmp(input, "exit") == 0){             //strcmp compares strings
             break;
         }
 
@@ -49,7 +49,7 @@ int main(){
         pid = fork();
         if(pid == 0){
             //child process
-            execvp(args[0], args);
+            execvp(args[0], args);           
             perror("exec failed");  //if execvp returns, there was an error
             exit(1);
         }else if(pid > 0){
