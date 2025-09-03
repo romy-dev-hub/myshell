@@ -45,6 +45,23 @@ int main(){
             continue;  //empty command
         }
 
+        //handle "cd" as a built-in
+        if (strcmp(args[0], "cd") == 0){
+            if (args[1] == NULL){
+                //no path provided --> go to home directory
+                char *home = getenv("HOME");
+                if (home != NULL){
+                    chdir(home);
+                }
+            }else{
+                //change the specified directory
+                if(chdir(args[1]) != 0){
+                    perror("cd failed");
+                }
+            }
+            continue; //skip fork/exec for cd 
+        }
+
         //fork and exec
         pid = fork();
         if(pid == 0){
